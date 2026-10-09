@@ -81,9 +81,9 @@ button:active { filter: brightness(1.2); }
 .list li { padding: 10px 0; border-bottom: 1px solid var(--surface-2); }
 .list li:last-child { border-bottom: 0; }
 
-a.button { line-height: 28px; }
+a.button { display: inline-flex; align-items: center; justify-content: center; }
 button:disabled { opacity: .4; cursor: default; }
-.big { font-size: 1.25rem; padding: 14px 32px; }
+.big, .actions:has(.big) > :is(button, .button) { font-size: 1.25rem; padding: 14px 32px; }
 .small { font-size: .85rem; }
 .center { justify-content: center; }
 .grow { flex: 1; }
