@@ -22,3 +22,4 @@ Persoonlijk project, volledig los van alle andere projecten (o.a. Counterfort). 
 ## Werkwijze
 - Bij elke wijziging aan bestanden: verhoog `CACHE_VERSION` in `sw.js` en houd de `ASSETS`-lijst up-to-date.
 - Lokaal testen met `serve.ps1` (http://localhost:8080).
+- Git: committen mag, **nooit pushen** — de gebruiker pusht altijd zelf (push naar `main` = live via GitHub Pages). Commits gebruiken de repo-lokale privé-identiteit, nooit de werkidentiteit.
