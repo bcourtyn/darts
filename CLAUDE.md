@@ -15,7 +15,7 @@ Persoonlijk project, volledig los van alle andere projecten (o.a. Counterfort). 
   - `standard`: waarde bij voor de speler zelf.
   - `cutthroat`: zolang je de enige bent die het nummer sloot, waarde bij voor jezelf (zoals standard). Zodra minstens één andere speler het ook sloot, waarde **afgetrokken** bij elke tegenstander die het nog open heeft. Eigen keuze van de gebruiker: ook hier speel je naar de meeste punten, niet de minste. Met 2 spelers = standard.
 - Winst (beide varianten): alles gesloten én punten ≥ elke tegenstander. Bij cut-throat kan iemand winnen door de worp van een ander.
-- Standaardvariant bij nieuw spel: cut-throat bij > 2 spelers, anders standaard; een manuele keuze blijft staan.
+- Standaardvariant bij nieuw spel: altijd cut-throat (`DEFAULT_MODE`); met 1–2 spelers is het resultaat toch gelijk aan standaard.
 - 1 tot 4 spelers per spel, gekozen uit een vaste spelerslijst. Spelers kunnen op "doet niet mee" gezet worden (`active: false`) i.p.v. verwijderd; enkel actieve spelers verschijnen bij een nieuw spel (bij ≤ 4 allemaal aangevinkt). Spellen bewaren een kopie van de spelersnamen.
 - Klassement (gespeeld, gewonnen, winst %) telt enkel afgewerkte spellen met ≥ 2 spelers. Gestopte spellen worden niet bewaard.
 

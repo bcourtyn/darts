@@ -1,5 +1,5 @@
 import { listPlayers, startGame, findActiveGame, deleteGame, isActive, MIN_PLAYERS, MAX_PLAYERS } from '../games.js';
-import { MODES, defaultMode } from '../cricket.js';
+import { MODES, DEFAULT_MODE } from '../cricket.js';
 import { navigate } from '../router.js';
 import { esc, loadPref, savePref } from '../util.js';
 
@@ -39,7 +39,7 @@ export async function newGameView(root) {
       <h2>Variant</h2>
       <div class="segmented">
         ${Object.entries(MODES).map(([key, label]) => `
-          <label><input type="radio" name="mode" value="${key}"><span>${label}</span></label>`).join('')}
+          <label><input type="radio" name="mode" value="${key}" ${key === DEFAULT_MODE ? 'checked' : ''}><span>${label}</span></label>`).join('')}
       </div>
       <p class="muted small" id="mode-help"></p>
       <div class="actions">
@@ -53,10 +53,8 @@ export async function newGameView(root) {
   const radios = [...root.querySelectorAll('input[name=mode]')];
   const help = root.querySelector('#mode-help');
   const start = root.querySelector('#start');
-  // Zolang de gebruiker zelf geen variant koos, volgt de variant het aantal spelers.
-  let modeChosen = false;
 
-  const selectedMode = () => radios.find((r) => r.checked)?.value ?? 'standard';
+  const selectedMode = () => radios.find((r) => r.checked)?.value ?? DEFAULT_MODE;
 
   function updateHelp() {
     help.textContent = selectedMode() === 'cutthroat'
@@ -68,18 +66,11 @@ export async function newGameView(root) {
     const count = boxes.filter((b) => b.checked).length;
     for (const b of boxes) b.disabled = !b.checked && count >= MAX_PLAYERS;
     start.disabled = count < MIN_PLAYERS;
-    if (!modeChosen) {
-      const mode = defaultMode(count);
-      for (const r of radios) r.checked = r.value === mode;
-    }
-    updateHelp();
   }
   boxes.forEach((b) => b.addEventListener('change', update));
-  radios.forEach((r) => r.addEventListener('change', () => {
-    modeChosen = true;
-    updateHelp();
-  }));
+  radios.forEach((r) => r.addEventListener('change', updateHelp));
   update();
+  updateHelp();
 
   start.addEventListener('click', async () => {
     const ids = boxes.filter((b) => b.checked).map((b) => b.value);

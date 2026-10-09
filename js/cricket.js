@@ -18,10 +18,8 @@ export const MODES = {
   cutthroat: 'Cut-throat',
 };
 
-// Standaard bij meer dan 2 spelers: cut-throat.
-export function defaultMode(playerCount) {
-  return playerCount > 2 ? 'cutthroat' : 'standard';
-}
+// Met 1 of 2 spelers geeft cut-throat hetzelfde resultaat als standaard, dus altijd cut-throat voorstellen.
+export const DEFAULT_MODE = 'cutthroat';
 
 export function targetLabel(t) {
   return t === BULL ? 'Bull' : String(t);
