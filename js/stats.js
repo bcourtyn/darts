@@ -25,14 +25,18 @@ export function playerStats(games) {
 }
 
 export const PERIODS = {
-  all: 'Alles',
+  '7d': '7 dagen',
   '30d': '30 dagen',
   year: 'Dit jaar',
+  all: 'Alles',
 };
+
+const DAY = 24 * 3600 * 1000;
 
 export function inPeriod(game, period, now = new Date()) {
   const at = new Date(game.finishedAt ?? game.startedAt);
-  if (period === '30d') return now - at <= 30 * 24 * 3600 * 1000;
+  if (period === '7d') return now - at <= 7 * DAY;
+  if (period === '30d') return now - at <= 30 * DAY;
   if (period === 'year') return at.getFullYear() === now.getFullYear();
   return true;
 }
