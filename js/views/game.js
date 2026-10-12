@@ -43,7 +43,7 @@ export async function gameView(root, params) {
     for (const id of ids) {
       const leader = state.points[id] === best && ids.some((o) => state.points[o] !== best);
       html += `
-        <div class="phead ${leader ? 'leader' : ''}">
+        <div class="phead ${leader ? 'leader' : ''}" data-p="${esc(id)}">
           <div class="pname">${esc(nameOf(id))}</div>
           <div class="ppoints">${state.points[id]}</div>
         </div>`;
@@ -109,11 +109,42 @@ export async function gameView(root, params) {
     if (!cell || cell.disabled) return;
     const p = cell.dataset.p;
     const t = Number(cell.dataset.t);
-    if (!canMark(computeState(ids, game.events, mode), p, t)) return;
+    const before = computeState(ids, game.events, mode);
+    if (!canMark(before, p, t)) return;
     game.events.push({ p, t });
     render();
+    feedback(before, computeState(ids, game.events, mode), p, t);
     await persist();
   });
+
+  // Korte bevestiging van een tik: vak licht op, zwevend label met het effect, gewijzigde scores pulseren.
+  function feedback(before, after, p, t) {
+    const cell = board.querySelector(`.cell[data-p="${CSS.escape(p)}"][data-t="${t}"]`);
+    const deltas = ids
+      .map((id) => ({ id, delta: after.points[id] - before.points[id] }))
+      .filter((d) => d.delta !== 0);
+
+    let label;
+    if (deltas.length === 0) {
+      label = after.marks[p][t] === 3 ? 'dicht' : `${after.marks[p][t]}/3`;
+    } else if (deltas[0].delta > 0) {
+      label = `+${deltas[0].delta}`;
+    } else {
+      label = `−${t}${deltas.length > 1 ? ` ×${deltas.length}` : ''}`;
+    }
+
+    if (cell) {
+      cell.classList.add('hit');
+      const pop = document.createElement('span');
+      pop.className = `pop ${deltas.length === 0 ? '' : deltas[0].delta > 0 ? 'plus' : 'minus'}`;
+      pop.textContent = label;
+      cell.append(pop);
+    }
+    for (const { id, delta } of deltas) {
+      board.querySelector(`.phead[data-p="${CSS.escape(id)}"]`)?.classList.add(delta > 0 ? 'gain' : 'loss');
+    }
+    navigator.vibrate?.(15);
+  }
 
   undoBtn.addEventListener('click', undo);
 
