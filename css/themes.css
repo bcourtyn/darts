@@ -124,3 +124,13 @@
 .theme-option input:checked + .theme-swatch { border-color: var(--accent); }
 .theme-option input:focus-visible + .theme-swatch { outline: 2px solid var(--text); outline-offset: 2px; }
 .theme-name { display: block; margin-top: 6px; text-align: center; font-size: .9rem; }
+
+/* Het pixel-lettertype is breed: op smalle schermen menu en knoppen kleiner. */
+@media (max-width: 600px) {
+  [data-theme="arcade"] .topbar nav { flex-wrap: wrap; font-size: .6rem; row-gap: 8px; }
+  [data-theme="arcade"] .brand { font-size: .9rem; }
+  [data-theme="arcade"] button, [data-theme="arcade"] .button { font-size: .7rem; padding: 8px 10px; }
+  [data-theme="arcade"] .mode-badge { font-size: .6rem; }
+  [data-theme="arcade"] .segmented span { font-size: .6rem; }
+  [data-theme="arcade"] h1 { font-size: 1.3rem; overflow-wrap: anywhere; }
+}
