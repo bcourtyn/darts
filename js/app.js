@@ -5,6 +5,7 @@ import { playersView } from './views/players.js';
 import { newGameView } from './views/newgame.js';
 import { gameView } from './views/game.js';
 import { historyView } from './views/history.js';
+import { statsView } from './views/stats.js';
 import { settingsView } from './views/settings.js';
 
 route('/', homeView);
@@ -12,6 +13,7 @@ route('/players', playersView);
 route('/new', newGameView);
 route('/game', gameView);
 route('/history', historyView);
+route('/stats', statsView);
 route('/settings', settingsView);
 
 startRouter();

@@ -28,20 +28,30 @@ export function targetLabel(t) {
 export function computeState(playerIds, events, mode = 'standard') {
   const marks = Object.fromEntries(playerIds.map((id) => [id, Object.fromEntries(TARGETS.map((t) => [t, 0]))]));
   const points = Object.fromEntries(playerIds.map((id) => [id, 0]));
-  const state = { playerIds, mode, marks, points, winnerId: null };
+  // Voor statistieken: alle getelde marks per nummer (ook boven de 3), wie elk nummer als eerste sloot,
+  // en punten die een speler zelf scoorde of bij anderen aftrok.
+  const hits = Object.fromEntries(playerIds.map((id) => [id, Object.fromEntries(TARGETS.map((t) => [t, 0]))]));
+  const gained = Object.fromEntries(playerIds.map((id) => [id, 0]));
+  const dealt = Object.fromEntries(playerIds.map((id) => [id, 0]));
+  const firstClosed = {};
+  const state = { playerIds, mode, marks, points, hits, gained, dealt, firstClosed, winnerId: null };
 
   for (const { p, t } of events) {
     if (state.winnerId) break;
     if (!marks[p] || !(t in marks[p])) continue;
+    hits[p][t]++;
     if (marks[p][t] < 3) {
       marks[p][t]++;
+      if (marks[p][t] === 3 && !firstClosed[t]) firstClosed[t] = p;
     } else {
       const open = openOpponents(state, p, t);
       const soleCloser = open.length === playerIds.length - 1;
       if (mode === 'cutthroat' && !soleCloser) {
         for (const id of open) points[id] -= t;
+        dealt[p] += t * open.length;
       } else if (open.length > 0) {
         points[p] += t;
+        gained[p] += t;
       }
     }
     // Bij cut-throat kan ook een tegenstander winnen door deze worp; de werper gaat voor.

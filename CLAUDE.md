@@ -18,6 +18,7 @@ Persoonlijk project, volledig los van alle andere projecten (o.a. Counterfort). 
 - Standaardvariant bij nieuw spel: altijd cut-throat (`DEFAULT_MODE`); met 1–2 spelers is het resultaat toch gelijk aan standaard.
 - 1 tot 4 spelers per spel, gekozen uit een vaste spelerslijst. Spelers kunnen op "doet niet mee" gezet worden (`active: false`) i.p.v. verwijderd; enkel actieve spelers verschijnen bij een nieuw spel (bij ≤ 4 allemaal aangevinkt). Spellen bewaren een kopie van de spelersnamen.
 - Klassement (gespeeld, gewonnen, winst %) telt enkel afgewerkte spellen met ≥ 2 spelers. Gestopte spellen worden niet bewaard.
+- Statistieken (`js/stats.js`, scherm `#/stats`) worden telkens herberekend uit de events; er wordt niets apart opgeslagen. `computeState` levert daarvoor ook `hits`, `firstClosed`, `gained` en `dealt`. Marks/nummers tellen alle afgewerkte spellen (ook solo); winst, reeksen en duels enkel ≥ 2 spelers. Geen MPR: er worden geen beurten bijgehouden.
 
 ## Werkwijze
 - Bij elke wijziging aan bestanden: verhoog `CACHE_VERSION` in `sw.js` en houd de `ASSETS`-lijst up-to-date.
