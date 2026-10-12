@@ -1,11 +1,30 @@
 import { exportAll, importAll } from '../db.js';
+import { THEMES, currentTheme, applyTheme } from '../themes.js';
+import { esc } from '../util.js';
 
 export async function settingsView(root) {
   const persisted = (await navigator.storage?.persisted?.()) ?? false;
+  const active = currentTheme();
 
   root.innerHTML = `
     <section class="card">
-      <h1>Gegevens</h1>
+      <h1>Thema</h1>
+      <p class="muted">Kies hoe de app eruitziet. De keuze geldt enkel voor dit toestel.</p>
+      <div class="theme-grid" role="radiogroup" aria-label="Thema">
+        ${THEMES.map((t) => `
+          <label class="theme-option">
+            <input type="radio" name="theme" value="${esc(t.id)}" ${t.id === active.id ? 'checked' : ''}>
+            <span class="theme-swatch" style="background:${t.swatch[0]}">
+              <span style="background:${t.swatch[1]}"></span>
+              <span style="background:${t.swatch[2]}"></span>
+              <span style="background:${t.swatch[3]}"></span>
+            </span>
+            <span class="theme-name">${esc(t.name)}</span>
+          </label>`).join('')}
+      </div>
+    </section>
+    <section class="card">
+      <h2>Gegevens</h2>
       <p class="muted">Alle gegevens staan enkel op dit toestel. Exporteer ze als backup of om ze naar een ander toestel over te zetten.</p>
       <div class="actions">
         <button id="export">Exporteren</button>
@@ -20,6 +39,9 @@ export async function settingsView(root) {
     </section>
   `;
 
+  for (const radio of root.querySelectorAll('input[name=theme]')) {
+    radio.addEventListener('change', () => applyTheme(radio.value));
+  }
   const status = root.querySelector('#status');
   const fileInput = root.querySelector('#file');
 

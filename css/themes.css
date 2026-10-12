@@ -1,0 +1,126 @@
+/* Thema's. Elk thema overschrijft de variabelen uit app.css via <html data-theme="...">.
+   Lettertypes staan lokaal in fonts/ (offline); ontbreekt een bestand, dan valt de browser terug op de systeemletters. */
+
+@font-face { font-family: "Oswald"; src: local("Oswald"), url("../fonts/oswald.woff2") format("woff2"); font-weight: 400 700; font-display: swap; }
+@font-face { font-family: "Caveat"; src: local("Caveat"), url("../fonts/caveat.woff2") format("woff2"); font-weight: 400 700; font-display: swap; }
+@font-face { font-family: "Bebas Neue"; src: local("Bebas Neue"), url("../fonts/bebas-neue.woff2") format("woff2"); font-display: swap; }
+@font-face { font-family: "Nunito"; src: local("Nunito"), url("../fonts/nunito.woff2") format("woff2"); font-weight: 400 900; font-display: swap; }
+@font-face { font-family: "Press Start 2P"; src: local("Press Start 2P"), url("../fonts/press-start-2p.woff2") format("woff2"); font-display: swap; }
+
+/* Kleur per speler (positie in het spel). */
+.p0 { --pc: var(--p0); --pc-bg: var(--p0-bg); --pc-fg: var(--p0-fg); }
+.p1 { --pc: var(--p1); --pc-bg: var(--p1-bg); --pc-fg: var(--p1-fg); }
+.p2 { --pc: var(--p2); --pc-bg: var(--p2-bg); --pc-fg: var(--p2-fg); }
+.p3 { --pc: var(--p3); --pc-bg: var(--p3-bg); --pc-fg: var(--p3-fg); }
+
+.avatar { display: none; }
+
+/* 1 · Dartbord klassiek */
+:root[data-theme="dartbord"] {
+  --bg: #0d0d0d; --surface: #1a1a1a; --surface-2: #2b2b2b;
+  --text: #f3e9d2; --muted: #a89f8a;
+  --accent: #1f7a45; --accent-dark: #145230; --on-accent: #f3e9d2; --danger: #b3202a;
+  --topbar-bg: #000; --topbar-text: #f3e9d2;
+  --font-display: "Oswald", "Arial Narrow", "Roboto Condensed", sans-serif;
+  --cell-bg: #161616; --num-bg: #f3e9d2; --num-color: #0d0d0d; --mark: #f3e9d2;
+  --p0: #b3202a; --p1: #1f7a45; --p2: #b3202a; --p3: #1f7a45;
+}
+[data-theme="dartbord"] .topbar { border-bottom: 4px solid #b3202a; box-shadow: 0 4px 0 #1f7a45; margin-bottom: 4px; }
+[data-theme="dartbord"] .phead { background: var(--pc); color: #f3e9d2; }
+[data-theme="dartbord"] .cell { --cell-border: color-mix(in srgb, var(--pc) 45%, transparent); }
+[data-theme="dartbord"] .target { font-weight: 500; }
+
+/* 2 · Krijtbord */
+:root[data-theme="krijtbord"] {
+  --bg: #2b4434; --surface: #33503e; --surface-2: #3f604b;
+  --text: #f4f1e6; --muted: #c9c4b0;
+  --accent: #f7d774; --accent-dark: #4d6b56; --on-accent: #2b4434; --danger: #d96c5c;
+  --topbar-bg: #243a2d; --topbar-text: #f4f1e6;
+  --font-display: "Caveat", "Segoe Print", "Chalkboard SE", "Bradley Hand", cursive;
+  --cell-bg: transparent; --cell-border: rgb(244 241 230 / .18);
+  --num-color: #f7d774; --mark: #f4f1e6; --mark-width: 3;
+  --gain: #f7d774; --loss: #ffab9e;
+}
+[data-theme="krijtbord"] .phead { background: transparent; border-bottom: 2px dashed rgb(244 241 230 / .5); border-radius: 0; }
+[data-theme="krijtbord"] .ppoints { font-size: 2.6rem; font-weight: 600; line-height: 1; }
+[data-theme="krijtbord"] .target { font-size: 2.2rem; font-weight: 600; }
+[data-theme="krijtbord"] .pname { font-family: var(--font-display); font-size: 1.4rem; line-height: 1.1; }
+[data-theme="krijtbord"] h1 { font-size: 2.4rem; }
+[data-theme="krijtbord"] .cell svg { stroke-dasharray: 30 2; }
+
+/* 3 · Sport-tv */
+:root[data-theme="sporttv"] {
+  --bg: #0b1430; --surface: #14204a; --surface-2: #1f2f66;
+  --text: #ffffff; --muted: #9fb0d9;
+  --accent: #ffd400; --accent-dark: #3a4a85; --on-accent: #0b1430; --danger: #e0115f;
+  --topbar-bg: #ffd400; --topbar-text: #0b1430;
+  --font-display: "Bebas Neue", "DIN Condensed", Impact, "Arial Narrow", sans-serif;
+  --cell-bg: #14204a; --num-bg: #ffd400; --num-color: #0b1430; --mark: #ffffff;
+  --p0: #00a3ff; --p1: #e0115f; --p2: #00c48c; --p3: #ff8a00;
+}
+[data-theme="sporttv"] .phead { background: var(--pc); border-radius: 4px; }
+[data-theme="sporttv"] .ppoints { font-size: 2.6rem; font-weight: 400; letter-spacing: 1px; }
+[data-theme="sporttv"] .target { font-size: 1.9rem; font-weight: 400; border-radius: 4px; }
+[data-theme="sporttv"] .cell { border: 0; border-left: 5px solid var(--pc); border-radius: 4px; }
+[data-theme="sporttv"] h1 { font-weight: 400; letter-spacing: 1px; font-size: 2.2rem; }
+
+/* 4 · Licht en speels */
+:root[data-theme="licht"] {
+  --bg: #f6f4ef; --surface: #ffffff; --surface-2: #ece8df;
+  --text: #2b2b2b; --muted: #6b675e;
+  --accent: #2f7d5b; --accent-dark: #cfe6da; --on-accent: #ffffff; --danger: #c2412d;
+  --topbar-bg: #ffffff; --topbar-text: #2b2b2b;
+  --font: "Nunito", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --radius: 16px;
+  --cell-bg: #ffffff; --mark: #2b2b2b; --mark-width: 3.5;
+  --gain: #2f7d5b; --loss: #c2412d;
+  --p0-bg: #cfe8ff; --p0-fg: #0c447c;
+  --p1-bg: #ffd9c7; --p1-fg: #8a3b16;
+  --p2-bg: #d5efc9; --p2-fg: #2f5a14;
+  --p3-bg: #eadcff; --p3-fg: #4b2a86;
+}
+[data-theme="licht"] .topbar { border-bottom: 1px solid #e4dfd3; }
+[data-theme="licht"] .card { border: 1px solid #ebe6db; }
+[data-theme="licht"] .phead { background: var(--pc-bg); color: var(--pc-fg); display: grid; grid-template-columns: auto 1fr; align-items: center; column-gap: 8px; text-align: left; padding: 8px 12px; }
+[data-theme="licht"] .phead .avatar { display: flex; grid-row: span 2; width: 2.4rem; height: 2.4rem; border-radius: 50%; background: #fff; align-items: center; justify-content: center; font-weight: 800; }
+[data-theme="licht"] .ppoints { font-weight: 800; line-height: 1; }
+[data-theme="licht"] .cell { --cell-border: var(--pc-bg); }
+[data-theme="licht"] .target { font-weight: 800; }
+[data-theme="licht"] .tile { background: var(--surface-2); }
+[data-theme="licht"] input:not([type=checkbox]) { background: #fff; }
+
+/* 5 · Retro arcade */
+:root[data-theme="arcade"] {
+  --bg: #000000; --surface: #0a0a0a; --surface-2: #1c1c1c;
+  --text: #ffffff; --muted: #8a8a8a;
+  --accent: #39ff14; --accent-dark: #145c08; --on-accent: #000000; --danger: #ff3b3b;
+  --topbar-bg: #000000; --topbar-text: #39ff14;
+  --font: "Press Start 2P", "Courier New", monospace;
+  --base-size: 15px; --radius: 0px;
+  --cell-bg: #000000; --num-color: #ffe600; --mark: #ffffff; --mark-width: 5;
+  --gain: #39ff14; --loss: #ff2bd6;
+  --p0: #39ff14; --p1: #ff2bd6; --p2: #00e5ff; --p3: #ffe600;
+}
+[data-theme="arcade"] .topbar { border-bottom: 3px solid #39ff14; }
+[data-theme="arcade"] .card { border: 2px solid #2a2a2a; }
+[data-theme="arcade"] .phead { background: #000; border: 3px solid var(--pc); color: var(--pc); }
+[data-theme="arcade"] .ppoints { font-size: 1.8rem; font-weight: 400; margin-top: 6px; }
+[data-theme="arcade"] .target { font-size: 1.4rem; font-weight: 400; }
+[data-theme="arcade"] .cell { --cell-border: color-mix(in srgb, var(--pc) 45%, transparent); }
+[data-theme="arcade"] .cell svg { stroke-linecap: square; }
+[data-theme="arcade"] h1, [data-theme="arcade"] h2 { font-weight: 400; line-height: 1.5; }
+[data-theme="arcade"] button, [data-theme="arcade"] .button { font-size: .9rem; }
+
+/* Themakiezer (instellingen) */
+.theme-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+.theme-option { cursor: pointer; display: block; }
+.theme-option input { position: absolute; opacity: 0; pointer-events: none; }
+.theme-swatch {
+  display: grid; grid-template-columns: 1fr 1.6rem 1fr; gap: 4px;
+  height: 84px; padding: 8px; border-radius: 10px;
+  border: 3px solid transparent;
+}
+.theme-swatch span { border-radius: 4px; }
+.theme-option input:checked + .theme-swatch { border-color: var(--accent); }
+.theme-option input:focus-visible + .theme-swatch { outline: 2px solid var(--text); outline-offset: 2px; }
+.theme-name { display: block; margin-top: 6px; text-align: center; font-size: .9rem; }

@@ -1,5 +1,6 @@
 import { route, startRouter } from './router.js';
 import { requestPersistentStorage } from './db.js';
+import { initTheme } from './themes.js';
 import { homeView } from './views/home.js';
 import { playersView } from './views/players.js';
 import { newGameView } from './views/newgame.js';
@@ -16,6 +17,7 @@ route('/history', historyView);
 route('/stats', statsView);
 route('/settings', settingsView);
 
+initTheme();
 startRouter();
 requestPersistentStorage();
 

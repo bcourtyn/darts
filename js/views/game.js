@@ -2,6 +2,7 @@ import { TARGETS, MODES, targetLabel, computeState, canMark, isClosedByAll } fro
 import { getGame, saveGame, deleteGame, startGame, listPlayers, gameMode } from '../games.js';
 import { navigate } from '../router.js';
 import { esc } from '../util.js';
+import { currentTheme } from '../themes.js';
 
 const MARK_SVG = [
   '',
@@ -38,23 +39,29 @@ export async function gameView(root, params) {
   function render() {
     const state = computeState(ids, game.events, mode);
     const best = Math.max(...ids.map((id) => state.points[id]));
+    // Sommige thema's zetten bij 2 spelers de nummers in het midden: speler 1 | nummer | speler 2.
+    const center = ids.length === 2 && currentTheme().center;
+    board.classList.toggle('center', center);
 
-    let html = '<div class="corner"></div>';
-    for (const id of ids) {
+    const head = ids.map((id, i) => {
       const leader = state.points[id] === best && ids.some((o) => state.points[o] !== best);
-      html += `
-        <div class="phead ${leader ? 'leader' : ''}" data-p="${esc(id)}">
+      return `
+        <div class="phead p${i} ${leader ? 'leader' : ''}" data-p="${esc(id)}">
+          <span class="avatar" aria-hidden="true">${esc(nameOf(id).charAt(0).toUpperCase())}</span>
           <div class="pname">${esc(nameOf(id))}</div>
           <div class="ppoints">${state.points[id]}</div>
         </div>`;
-    }
+    });
+    let html = center ? `${head[0]}<div class="corner"></div>${head[1]}` : `<div class="corner"></div>${head.join('')}`;
+
     for (const t of TARGETS) {
-      html += `<div class="target ${isClosedByAll(state, t) ? 'closed' : ''}">${targetLabel(t)}</div>`;
-      for (const id of ids) {
+      const label = `<div class="target ${isClosedByAll(state, t) ? 'closed' : ''}">${targetLabel(t)}</div>`;
+      const cells = ids.map((id, i) => {
         const m = Math.min(state.marks[id][t], 3);
         const live = canMark(state, id, t);
-        html += `<button class="cell ${live ? '' : 'dead'}" data-p="${esc(id)}" data-t="${t}" ${live ? '' : 'disabled'} aria-label="${esc(nameOf(id))} ${targetLabel(t)}">${MARK_SVG[m]}</button>`;
-      }
+        return `<button class="cell p${i} ${live ? '' : 'dead'}" data-p="${esc(id)}" data-t="${t}" ${live ? '' : 'disabled'} aria-label="${esc(nameOf(id))} ${targetLabel(t)}">${MARK_SVG[m]}</button>`;
+      });
+      html += center ? `${cells[0]}${label}${cells[1]}` : `${label}${cells.join('')}`;
     }
     board.innerHTML = html;
     undoBtn.disabled = game.events.length === 0;

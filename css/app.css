@@ -7,6 +7,20 @@
   --accent: #16a34a;
   --accent-dark: #14532d;
   --danger: #dc2626;
+  --on-accent: var(--text);
+  --topbar-bg: var(--accent-dark);
+  --topbar-text: var(--text);
+  --font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-display: var(--font);
+  --base-size: 18px;
+  --cell-bg: var(--surface);
+  --cell-border: transparent;
+  --num-bg: transparent;
+  --num-color: var(--text);
+  --mark: var(--text);
+  --mark-width: 4;
+  --gain: #4ade80;
+  --loss: #f87171;
   --radius: 12px;
   --gap: 16px;
   --safe-top: env(safe-area-inset-top, 0px);
@@ -19,8 +33,8 @@ html, body {
   margin: 0;
   background: var(--bg);
   color: var(--text);
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  font-size: 18px;
+  font-family: var(--font);
+  font-size: var(--base-size);
   -webkit-tap-highlight-color: transparent;
   -webkit-user-select: none;
   user-select: none;
@@ -33,10 +47,10 @@ html, body {
   justify-content: space-between;
   gap: var(--gap);
   padding: calc(var(--safe-top) + 10px) var(--gap) 10px;
-  background: var(--accent-dark);
+  background: var(--topbar-bg);
 }
 
-.topbar a { color: var(--text); text-decoration: none; }
+.topbar a { color: var(--topbar-text); text-decoration: none; }
 .topbar nav { display: flex; gap: var(--gap); }
 .brand { font-weight: 700; font-size: 1.1rem; }
 
@@ -47,7 +61,7 @@ main {
   margin: 0 auto;
 }
 
-h1, h2 { margin: 0 0 var(--gap); }
+h1, h2 { margin: 0 0 var(--gap); font-family: var(--font-display); }
 
 .card {
   background: var(--surface);
@@ -71,7 +85,7 @@ button, .button {
   text-decoration: none;
 }
 
-button.primary { background: var(--accent); font-weight: 600; }
+button.primary, .button.primary { background: var(--accent); color: var(--on-accent); font-weight: 600; }
 button.danger { background: var(--danger); }
 button:active { filter: brightness(1.2); }
 
@@ -113,7 +127,7 @@ button.icon { min-height: 40px; padding: 6px 14px; background: transparent; colo
   min-height: 56px; padding: 0 16px;
   background: var(--surface-2); border-radius: var(--radius); cursor: pointer;
 }
-.pick-player:has(input:checked) { background: var(--accent); }
+.pick-player:has(input:checked) { background: var(--accent); color: var(--on-accent); }
 .pick-player:has(input:disabled) { opacity: .4; }
 .pick-player input { width: 22px; height: 22px; accent-color: var(--accent-dark); }
 
@@ -129,27 +143,29 @@ body[data-view=game] main { max-width: none; padding-top: 8px; }
 .board {
   display: grid;
   grid-template-columns: minmax(3.5rem, 5rem) repeat(var(--n), 1fr);
-  grid-template-rows: auto repeat(7, 1fr);
+  grid-template-rows: max-content repeat(7, minmax(0, 1fr));
   gap: 6px;
   height: calc(100dvh - 150px - var(--safe-top) - var(--safe-bottom));
   min-height: 440px;
   touch-action: manipulation;
 }
+.board.center { grid-template-columns: 1fr minmax(3.5rem, 5rem) 1fr; }
 .phead { background: var(--surface); border-radius: var(--radius); padding: 6px 8px; text-align: center; overflow: hidden; }
 .phead.leader { box-shadow: inset 0 0 0 2px var(--accent); }
 .pname { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.ppoints { font-size: 2rem; font-weight: 700; font-variant-numeric: tabular-nums; }
-.target { display: flex; align-items: center; justify-content: center; font-size: 1.6rem; font-weight: 700; }
+.ppoints { font-family: var(--font-display); font-size: 2rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+.target { display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-size: 1.6rem; font-weight: 700; background: var(--num-bg); color: var(--num-color); border-radius: var(--radius); }
 .target.closed { color: var(--muted); text-decoration: line-through; }
 .cell {
   display: flex; align-items: center; justify-content: center;
   min-height: 0; padding: 0;
-  background: var(--surface);
+  background: var(--cell-bg);
+  border: 2px solid var(--cell-border);
   touch-action: manipulation;
 }
 .cell:active:not(:disabled) { background: var(--accent-dark); filter: none; }
 .cell.dead { opacity: .35; }
-.cell svg { height: 70%; max-height: 64px; width: auto; aspect-ratio: 1; fill: none; stroke: var(--text); stroke-width: 4; stroke-linecap: round; }
+.cell svg { height: 70%; max-height: 64px; width: auto; aspect-ratio: 1; fill: none; stroke: var(--mark); stroke-width: var(--mark-width); stroke-linecap: round; }
 
 .overlay {
   position: fixed; inset: 0; z-index: 10;
@@ -170,7 +186,7 @@ li.inactive .name { color: var(--muted); text-decoration: line-through; }
 .segmented label { cursor: pointer; }
 .segmented input { position: absolute; opacity: 0; pointer-events: none; }
 .segmented span { display: block; min-height: 44px; line-height: 44px; padding: 0 20px; border-radius: calc(var(--radius) - 4px); }
-.segmented input:checked + span { background: var(--accent); font-weight: 600; }
+.segmented input:checked + span { background: var(--accent); color: var(--on-accent); font-weight: 600; }
 .mode-badge { align-self: center; color: var(--muted); font-size: .9rem; }
 
 /* Feedback bij een tik */
@@ -178,7 +194,7 @@ li.inactive .name { color: var(--muted); text-decoration: line-through; }
 .cell.hit { animation: hit .35s ease-out; }
 @keyframes hit {
   from { background: var(--accent); }
-  to { background: var(--surface); }
+  to { background: var(--cell-bg); }
 }
 .pop {
   position: absolute; left: 50%; top: 50%;
@@ -188,7 +204,7 @@ li.inactive .name { color: var(--muted); text-decoration: line-through; }
   pointer-events: none;
   animation: pop .9s ease-out forwards;
 }
-.pop.plus { background: var(--accent); }
+.pop.plus { background: var(--accent); color: var(--on-accent); }
 .pop.minus { background: var(--danger); }
 @keyframes pop {
   0% { transform: translate(-50%, -20%) scale(.8); opacity: 0; }
@@ -198,8 +214,8 @@ li.inactive .name { color: var(--muted); text-decoration: line-through; }
 }
 .phead.gain .ppoints { animation: gain .6s ease-out; }
 .phead.loss .ppoints { animation: loss .6s ease-out; }
-@keyframes gain { 30% { color: #4ade80; transform: scale(1.25); } }
-@keyframes loss { 30% { color: #f87171; transform: scale(1.25); } }
+@keyframes gain { 30% { color: var(--gain); transform: scale(1.25); } }
+@keyframes loss { 30% { color: var(--loss); transform: scale(1.25); } }
 .ppoints { display: inline-block; }
 
 @media (prefers-reduced-motion: reduce) {
