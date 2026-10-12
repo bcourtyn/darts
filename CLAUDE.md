@@ -23,7 +23,8 @@ Persoonlijk project, volledig los van alle andere projecten (o.a. Counterfort). 
 ## Thema's
 - Keuze per toestel (localStorage `darts.theme`), gezet als `<html data-theme>`; een inline script in `index.html` zet het al vóór de eerste weergave.
 - `css/app.css` gebruikt enkel variabelen (`--bg`, `--accent`, `--on-accent`, `--cell-bg`, `--mark`, `--font-display`, …); `css/themes.css` overschrijft ze per thema. Nieuwe opmaak: geen vaste kleuren, altijd een variabele.
-- `js/themes.js` bevat de lijst (naam, `center`, voorbeeldkleuren). `center: true` = bij 2 spelers staan de nummers in het midden.
+- `js/themes.js` bevat de lijst (naam, `center`). `center: true` = bij 2 spelers staan de nummers in het midden.
+- De themakiezer in Instellingen toont per thema het echte scorebord (Matthias tegen Bert, Bert voor) in een `srcdoc`-iframe, zodat het thema niet uitlekt naar de pagina. Het bord komt uit `boardHtml()` in `js/views/game.js`.
 - Spelerskleuren via klassen `p0`–`p3` (variabelen `--pc`, `--pc-bg`, `--pc-fg`).
 - Lettertypes lokaal in `fonts/` (offline); ontbreken ze, dan vallen de thema's terug op systeemletters.
 

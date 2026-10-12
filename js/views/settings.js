@@ -1,6 +1,44 @@
 import { exportAll, importAll } from '../db.js';
 import { THEMES, currentTheme, applyTheme } from '../themes.js';
 import { esc } from '../util.js';
+import { computeState, MODES } from '../cricket.js';
+import { boardHtml } from './game.js';
+
+// Voorbeeldspel voor de themakiezer: Bert staat duidelijk voor op Matthias.
+const PREVIEW_PLAYERS = { m: 'Matthias', b: 'Bert' };
+const PREVIEW_EVENTS = [
+  ...Array(6).fill({ p: 'b', t: 20 }),
+  ...Array(3).fill({ p: 'b', t: 19 }),
+  ...Array(2).fill({ p: 'b', t: 18 }),
+  ...Array(3).fill({ p: 'b', t: 16 }),
+  { p: 'b', t: 25 },
+  ...Array(2).fill({ p: 'm', t: 20 }),
+  { p: 'm', t: 19 },
+  ...Array(4).fill({ p: 'm', t: 17 }),
+  { p: 'm', t: 15 },
+];
+
+// Volledig HTML-document voor één voorbeeld; draait in een iframe zodat het thema niet uitlekt naar de pagina.
+function previewDoc(theme) {
+  const state = computeState(['m', 'b'], PREVIEW_EVENTS, 'standard');
+  const board = boardHtml(state, (id) => PREVIEW_PLAYERS[id], theme.center);
+  return `<!doctype html>
+<html lang="nl" data-theme="${theme.id}">
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="css/app.css">
+  <link rel="stylesheet" href="css/themes.css">
+  <style>body { overflow: hidden; } main { padding: 8px 12px; max-width: none; } .board { height: 360px; min-height: 0; }</style>
+</head>
+<body data-view="game">
+  <header class="topbar"><span class="brand">🎯 Darts Cricket</span><nav><span>Spelers</span><span>Historiek</span><span>Statistieken</span></nav></header>
+  <main>
+    <div class="game-toolbar"><button>↶ Ongedaan maken</button><span class="mode-badge">${MODES.standard}</span><button class="danger">Stoppen</button></div>
+    <div class="board ${theme.center ? 'center' : ''}" style="--n:2">${board}</div>
+  </main>
+</body>
+</html>`;
+}
 
 export async function settingsView(root) {
   const persisted = (await navigator.storage?.persisted?.()) ?? false;
@@ -14,10 +52,8 @@ export async function settingsView(root) {
         ${THEMES.map((t) => `
           <label class="theme-option">
             <input type="radio" name="theme" value="${esc(t.id)}" ${t.id === active.id ? 'checked' : ''}>
-            <span class="theme-swatch" style="background:${t.swatch[0]}">
-              <span style="background:${t.swatch[1]}"></span>
-              <span style="background:${t.swatch[2]}"></span>
-              <span style="background:${t.swatch[3]}"></span>
+            <span class="theme-frame">
+              <iframe srcdoc="${esc(previewDoc(t))}" tabindex="-1" aria-hidden="true" loading="lazy"></iframe>
             </span>
             <span class="theme-name">${esc(t.name)}</span>
           </label>`).join('')}
@@ -42,6 +78,12 @@ export async function settingsView(root) {
   for (const radio of root.querySelectorAll('input[name=theme]')) {
     radio.addEventListener('change', () => applyTheme(radio.value));
   }
+
+  // De voorbeelden zijn 640×480 en worden geschaald tot de breedte van hun kader.
+  const frames = [...root.querySelectorAll('.theme-frame')];
+  const fit = () => frames.forEach((f) => f.style.setProperty('--preview-scale', f.clientWidth / 640));
+  fit();
+  new ResizeObserver(fit).observe(root.querySelector('.theme-grid'));
   const status = root.querySelector('#status');
   const fileInput = root.querySelector('#file');
 

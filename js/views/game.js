@@ -11,6 +11,34 @@ const MARK_SVG = [
   '<svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="17"/><line x1="10" y1="30" x2="30" y2="10"/><line x1="10" y1="10" x2="30" y2="30"/></svg>',
 ];
 
+// Inhoud van het scorebord; ook gebruikt voor de themavoorbeelden in Instellingen.
+export function boardHtml(state, nameOf, center) {
+  const ids = state.playerIds;
+  const best = Math.max(...ids.map((id) => state.points[id]));
+
+  const head = ids.map((id, i) => {
+    const leader = state.points[id] === best && ids.some((o) => state.points[o] !== best);
+    return `
+      <div class="phead p${i} ${leader ? 'leader' : ''}" data-p="${esc(id)}">
+        <span class="avatar" aria-hidden="true">${esc(nameOf(id).charAt(0).toUpperCase())}</span>
+        <div class="pname">${esc(nameOf(id))}</div>
+        <div class="ppoints">${state.points[id]}</div>
+      </div>`;
+  });
+  let html = center ? `${head[0]}<div class="corner"></div>${head[1]}` : `<div class="corner"></div>${head.join('')}`;
+
+  for (const t of TARGETS) {
+    const label = `<div class="target ${isClosedByAll(state, t) ? 'closed' : ''}">${targetLabel(t)}</div>`;
+    const cells = ids.map((id, i) => {
+      const m = Math.min(state.marks[id][t], 3);
+      const live = canMark(state, id, t);
+      return `<button class="cell p${i} ${live ? '' : 'dead'}" data-p="${esc(id)}" data-t="${t}" ${live ? '' : 'disabled'} aria-label="${esc(nameOf(id))} ${targetLabel(t)}">${MARK_SVG[m]}</button>`;
+    });
+    html += center ? `${cells[0]}${label}${cells[1]}` : `${label}${cells.join('')}`;
+  }
+  return html;
+}
+
 export async function gameView(root, params) {
   const game = await getGame(params.get('id'));
   if (!game) {
@@ -38,32 +66,10 @@ export async function gameView(root, params) {
 
   function render() {
     const state = computeState(ids, game.events, mode);
-    const best = Math.max(...ids.map((id) => state.points[id]));
     // Sommige thema's zetten bij 2 spelers de nummers in het midden: speler 1 | nummer | speler 2.
     const center = ids.length === 2 && currentTheme().center;
     board.classList.toggle('center', center);
-
-    const head = ids.map((id, i) => {
-      const leader = state.points[id] === best && ids.some((o) => state.points[o] !== best);
-      return `
-        <div class="phead p${i} ${leader ? 'leader' : ''}" data-p="${esc(id)}">
-          <span class="avatar" aria-hidden="true">${esc(nameOf(id).charAt(0).toUpperCase())}</span>
-          <div class="pname">${esc(nameOf(id))}</div>
-          <div class="ppoints">${state.points[id]}</div>
-        </div>`;
-    });
-    let html = center ? `${head[0]}<div class="corner"></div>${head[1]}` : `<div class="corner"></div>${head.join('')}`;
-
-    for (const t of TARGETS) {
-      const label = `<div class="target ${isClosedByAll(state, t) ? 'closed' : ''}">${targetLabel(t)}</div>`;
-      const cells = ids.map((id, i) => {
-        const m = Math.min(state.marks[id][t], 3);
-        const live = canMark(state, id, t);
-        return `<button class="cell p${i} ${live ? '' : 'dead'}" data-p="${esc(id)}" data-t="${t}" ${live ? '' : 'disabled'} aria-label="${esc(nameOf(id))} ${targetLabel(t)}">${MARK_SVG[m]}</button>`;
-      });
-      html += center ? `${cells[0]}${label}${cells[1]}` : `${label}${cells.join('')}`;
-    }
-    board.innerHTML = html;
+    board.innerHTML = boardHtml(state, nameOf, center);
     undoBtn.disabled = game.events.length === 0;
     renderOverlay(state);
   }

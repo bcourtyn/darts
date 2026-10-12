@@ -111,19 +111,6 @@
 [data-theme="arcade"] h1, [data-theme="arcade"] h2 { font-weight: 400; line-height: 1.5; }
 [data-theme="arcade"] button, [data-theme="arcade"] .button { font-size: .9rem; }
 
-/* Themakiezer (instellingen) */
-.theme-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
-.theme-option { cursor: pointer; display: block; }
-.theme-option input { position: absolute; opacity: 0; pointer-events: none; }
-.theme-swatch {
-  display: grid; grid-template-columns: 1fr 1.6rem 1fr; gap: 4px;
-  height: 84px; padding: 8px; border-radius: 10px;
-  border: 3px solid transparent;
-}
-.theme-swatch span { border-radius: 4px; }
-.theme-option input:checked + .theme-swatch { border-color: var(--accent); }
-.theme-option input:focus-visible + .theme-swatch { outline: 2px solid var(--text); outline-offset: 2px; }
-.theme-name { display: block; margin-top: 6px; text-align: center; font-size: .9rem; }
 
 /* Het pixel-lettertype is breed: op smalle schermen menu en knoppen kleiner. */
 @media (max-width: 600px) {
@@ -134,3 +121,22 @@
   [data-theme="arcade"] .segmented span { font-size: .6rem; }
   [data-theme="arcade"] h1 { font-size: 1.3rem; overflow-wrap: anywhere; }
 }
+
+/* Themakiezer (instellingen): elk voorbeeld is een afgeschermd iframe met het echte scorebord in dat thema. */
+.theme-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
+.theme-option { cursor: pointer; display: block; }
+.theme-option > input { position: absolute; opacity: 0; pointer-events: none; }
+.theme-frame {
+  display: block; position: relative; overflow: hidden;
+  aspect-ratio: 4 / 3; border-radius: 10px; background: var(--surface-2);
+  outline: 3px solid transparent; outline-offset: 3px;
+}
+.theme-option > input:checked + .theme-frame { outline-color: var(--accent); }
+.theme-option > input:focus-visible + .theme-frame { outline-color: var(--text); }
+.theme-frame iframe {
+  position: absolute; top: 0; left: 0; width: 640px; height: 480px; border: 0;
+  transform-origin: top left; transform: scale(var(--preview-scale, .375));
+  pointer-events: none;
+}
+.theme-name { display: block; margin-top: 8px; text-align: center; font-size: .9rem; }
+.theme-option > input:checked ~ .theme-name { font-weight: 700; }
