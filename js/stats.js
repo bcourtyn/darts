@@ -25,6 +25,7 @@ export function playerStats(games) {
 }
 
 export const PERIODS = {
+  week: 'Deze week',
   '7d': '7 dagen',
   '30d': '30 dagen',
   year: 'Dit jaar',
@@ -33,8 +34,16 @@ export const PERIODS = {
 
 const DAY = 24 * 3600 * 1000;
 
+// Maandag 00:00 (lokale tijd) van de week waarin 'date' valt.
+function startOfWeek(date) {
+  const start = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  start.setDate(start.getDate() - ((start.getDay() + 6) % 7));
+  return start;
+}
+
 export function inPeriod(game, period, now = new Date()) {
   const at = new Date(game.finishedAt ?? game.startedAt);
+  if (period === 'week') return at >= startOfWeek(now);
   if (period === '7d') return now - at <= 7 * DAY;
   if (period === '30d') return now - at <= 30 * DAY;
   if (period === 'year') return at.getFullYear() === now.getFullYear();

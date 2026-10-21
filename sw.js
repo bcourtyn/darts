@@ -1,6 +1,6 @@
 // Service worker: cache-first zodat de app volledig offline werkt.
 // Verhoog CACHE_VERSION bij elke release, anders blijven toestellen de oude versie gebruiken.
-const CACHE_VERSION = 'darts-v14';
+const CACHE_VERSION = 'darts-v15';
 
 const ASSETS = [
   './',
