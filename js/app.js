@@ -1,6 +1,7 @@
 import { route, startRouter } from './router.js';
 import { requestPersistentStorage } from './db.js';
 import { initTheme } from './themes.js';
+import { registerServiceWorker } from './update.js';
 import { homeView } from './views/home.js';
 import { playersView } from './views/players.js';
 import { newGameView } from './views/newgame.js';
@@ -20,7 +21,5 @@ route('/settings', settingsView);
 initTheme();
 startRouter();
 requestPersistentStorage();
+registerServiceWorker();
 
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./sw.js').catch((err) => console.warn('Service worker niet geregistreerd', err));
-}

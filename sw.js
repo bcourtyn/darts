@@ -1,6 +1,6 @@
 // Service worker: cache-first zodat de app volledig offline werkt.
 // Verhoog CACHE_VERSION bij elke release, anders blijven toestellen de oude versie gebruiken.
-const CACHE_VERSION = 'darts-v15';
+const CACHE_VERSION = 'darts-v16';
 
 const ASSETS = [
   './',
@@ -15,6 +15,7 @@ const ASSETS = [
   './js/games.js',
   './js/stats.js',
   './js/themes.js',
+  './js/update.js',
   './js/util.js',
   './js/views/home.js',
   './js/views/players.js',
@@ -34,9 +35,14 @@ const ASSETS = [
   './icons/apple-touch-icon.png',
 ];
 
+// Een nieuwe versie wacht tot de gebruiker op "Vernieuwen" tikt (zie js/update.js),
+// zodat een draaiende app nooit half oude, half nieuwe bestanden gebruikt.
 self.addEventListener('install', (event) => {
   event.waitUntil(caches.open(CACHE_VERSION).then((cache) => cache.addAll(ASSETS)));
-  self.skipWaiting();
+});
+
+self.addEventListener('message', (event) => {
+  if (event.data?.type === 'SKIP_WAITING') self.skipWaiting();
 });
 
 self.addEventListener('activate', (event) => {
