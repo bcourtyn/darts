@@ -29,7 +29,7 @@ Persoonlijk project, volledig los van alle andere projecten (o.a. Counterfort). 
 - Lettertypes lokaal in `fonts/` (offline); ontbreken ze, dan vallen de thema's terug op systeemletters.
 
 ## Werkwijze
-- Bij elke wijziging aan bestanden: verhoog `CACHE_VERSION` in `sw.js` en houd de `ASSETS`-lijst up-to-date.
+- Bij elke wijziging aan bestanden: verhoog `VERSION` in `sw.js` (= versienummer in Instellingen en in de update-melding, en naam van de cache) en houd de `ASSETS`-lijst up-to-date.
 - Updates: een nieuwe service worker wacht (geen automatische `skipWaiting`); `js/update.js` toont dan "Nieuwe versie beschikbaar" en activeert pas na een tik op Vernieuwen, waarna de pagina herlaadt. Bij terugkeren naar de app (visibilitychange) wordt opnieuw naar updates gekeken.
 - Lokaal testen met `serve.ps1` (http://localhost:8080).
 - Git: committen mag, **nooit pushen** — de gebruiker pusht altijd zelf (push naar `main` = live via GitHub Pages). Commits gebruiken de repo-lokale privé-identiteit, nooit de werkidentiteit.

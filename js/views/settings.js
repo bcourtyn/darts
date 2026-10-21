@@ -3,6 +3,7 @@ import { THEMES, currentTheme, applyTheme } from '../themes.js';
 import { esc } from '../util.js';
 import { computeState, MODES } from '../cricket.js';
 import { boardHtml } from './game.js';
+import { currentVersion } from '../update.js';
 
 // Voorbeeldspel voor de themakiezer: Bert staat duidelijk voor op Matthias.
 const PREVIEW_PLAYERS = { m: 'Matthias', b: 'Bert' };
@@ -73,6 +74,10 @@ export async function settingsView(root) {
       <h2>Opslag</h2>
       <p class="muted">Blijvende opslag: ${persisted ? 'ja' : 'nee (installeer de app op het beginscherm)'}</p>
     </section>
+    <section class="card">
+      <h2>Over de app</h2>
+      <p class="muted">Versie: <strong id="app-version">…</strong></p>
+    </section>
   `;
 
   for (const radio of root.querySelectorAll('input[name=theme]')) {
@@ -84,6 +89,10 @@ export async function settingsView(root) {
   const fit = () => frames.forEach((f) => f.style.setProperty('--preview-scale', f.clientWidth / 640));
   fit();
   new ResizeObserver(fit).observe(root.querySelector('.theme-grid'));
+  currentVersion().then((v) => {
+    root.querySelector('#app-version').textContent = v ?? 'onbekend (geen offline-versie actief)';
+  });
+
   const status = root.querySelector('#status');
   const fileInput = root.querySelector('#file');
 

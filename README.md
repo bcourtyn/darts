@@ -36,6 +36,6 @@ De app moet via HTTPS gehost worden (bv. GitHub Pages of Cloudflare Pages). Daar
 
 De app wordt gehost via GitHub Pages (branch `main`, map `/ (root)`).
 
-1. Verhoog `CACHE_VERSION` in `sw.js` en voeg nieuwe bestanden toe aan de `ASSETS`-lijst.
+1. Verhoog `VERSION` in `sw.js` en voeg nieuwe bestanden toe aan de `ASSETS`-lijst.
 2. Commit en push naar `main`. GitHub Pages publiceert automatisch binnen een minuut.
-3. Geïnstalleerde toestellen halen de nieuwe versie op bij de volgende keer openen (soms pas bij de tweede keer).
+3. Geïnstalleerde toestellen tonen bij het openen of terugkeren naar de app "Versie N beschikbaar"; een tik op Vernieuwen activeert ze. Het actieve versienummer staat in Instellingen.

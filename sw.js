@@ -1,6 +1,7 @@
 // Service worker: cache-first zodat de app volledig offline werkt.
-// Verhoog CACHE_VERSION bij elke release, anders blijven toestellen de oude versie gebruiken.
-const CACHE_VERSION = 'darts-v17';
+// Verhoog VERSION bij elke release: dat is het versienummer in de app, en zonder nieuwe versie blijven toestellen de oude bestanden gebruiken.
+const VERSION = 18;
+const CACHE_VERSION = `darts-v${VERSION}`;
 
 const ASSETS = [
   './',
@@ -43,6 +44,7 @@ self.addEventListener('install', (event) => {
 
 self.addEventListener('message', (event) => {
   if (event.data?.type === 'SKIP_WAITING') self.skipWaiting();
+  if (event.data?.type === 'GET_VERSION') event.ports[0]?.postMessage(VERSION);
 });
 
 self.addEventListener('activate', (event) => {
