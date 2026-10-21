@@ -1,6 +1,6 @@
 // Service worker: cache-first zodat de app volledig offline werkt.
 // Verhoog VERSION bij elke release: dat is het versienummer in de app, en zonder nieuwe versie blijven toestellen de oude bestanden gebruiken.
-const VERSION = 18;
+const VERSION = 19;
 const CACHE_VERSION = `darts-v${VERSION}`;
 
 const ASSETS = [
@@ -39,7 +39,10 @@ const ASSETS = [
 // Een nieuwe versie wacht tot de gebruiker op "Vernieuwen" tikt (zie js/update.js),
 // zodat een draaiende app nooit half oude, half nieuwe bestanden gebruikt.
 self.addEventListener('install', (event) => {
-  event.waitUntil(caches.open(CACHE_VERSION).then((cache) => cache.addAll(ASSETS)));
+  // cache: 'reload' = altijd vers van de server; anders kan de browser bestanden uit zijn
+  // eigen webcache nemen (GitHub Pages: 10 minuten) en komen er oude bestanden in de nieuwe versie.
+  const requests = ASSETS.map((url) => new Request(url, { cache: 'reload' }));
+  event.waitUntil(caches.open(CACHE_VERSION).then((cache) => cache.addAll(requests)));
 });
 
 self.addEventListener('message', (event) => {
