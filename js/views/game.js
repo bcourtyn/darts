@@ -117,17 +117,53 @@ export async function gameView(root, params) {
     render();
   }
 
-  board.addEventListener('click', async (e) => {
-    const cell = e.target.closest('.cell');
-    if (!cell || cell.disabled) return;
-    const p = cell.dataset.p;
-    const t = Number(cell.dataset.t);
+  async function mark(p, t) {
     const before = computeState(ids, game.events, mode);
     if (!canMark(before, p, t)) return;
     game.events.push({ p, t });
     render();
     feedback(before, computeState(ids, game.events, mode), p, t);
     await persist();
+  }
+
+  // Tikken via pointer events i.p.v. 'click': de browser annuleert een klik al bij een kleine
+  // verschuiving van de vinger. Een tik telt als de vinger loslaat binnen hetzelfde vak (met marge).
+  // Per vinger (pointerId) bijgehouden, zodat snelle opeenvolgende tikken niet verloren gaan.
+  const TAP_MARGIN = 16;
+  const pressed = new Map(); // pointerId → { p, t }
+  const cellFor = ({ p, t }) => board.querySelector(`.cell[data-p="${CSS.escape(p)}"][data-t="${t}"]`);
+
+  board.addEventListener('pointerdown', (e) => {
+    const cell = e.target.closest('.cell');
+    if (!cell || cell.disabled || (e.pointerType === 'mouse' && e.button !== 0)) return;
+    pressed.set(e.pointerId, { p: cell.dataset.p, t: Number(cell.dataset.t) });
+    cell.classList.add('pressed');
+  });
+
+  board.addEventListener('pointerup', (e) => {
+    const target = pressed.get(e.pointerId);
+    if (!target) return;
+    pressed.delete(e.pointerId);
+    const cell = cellFor(target);
+    cell?.classList.remove('pressed');
+    if (!cell) return;
+    const r = cell.getBoundingClientRect();
+    const inside = e.clientX >= r.left - TAP_MARGIN && e.clientX <= r.right + TAP_MARGIN
+      && e.clientY >= r.top - TAP_MARGIN && e.clientY <= r.bottom + TAP_MARGIN;
+    if (inside) mark(target.p, target.t);
+  });
+
+  board.addEventListener('pointercancel', (e) => {
+    const target = pressed.get(e.pointerId);
+    pressed.delete(e.pointerId);
+    if (target) cellFor(target)?.classList.remove('pressed');
+  });
+
+  // Toetsenbord (Enter/spatie op een gefocust vak) geeft een 'click' zonder pointer: detail === 0.
+  board.addEventListener('click', (e) => {
+    const cell = e.target.closest('.cell');
+    if (e.detail !== 0 || !cell || cell.disabled) return;
+    mark(cell.dataset.p, Number(cell.dataset.t));
   });
 
   // Korte bevestiging van een tik: vak licht op, zwevend label met het effect, gewijzigde scores pulseren.

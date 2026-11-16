@@ -147,7 +147,9 @@ body[data-view=game] main { max-width: none; padding-top: 8px; }
   gap: 6px;
   height: calc(100dvh - 150px - var(--safe-top) - var(--safe-bottom));
   min-height: 440px;
-  touch-action: manipulation;
+  /* Geen scrollen/zoomen vanaf het bord: anders wordt een kleine veeg als scrollen gezien en telt de tik niet. */
+  touch-action: none;
+  -webkit-touch-callout: none;
 }
 .board.center { grid-template-columns: 1fr minmax(3.5rem, 5rem) 1fr; }
 .phead { background: var(--surface); border-radius: var(--radius); padding: 6px 8px; text-align: center; overflow: hidden; }
@@ -161,9 +163,9 @@ body[data-view=game] main { max-width: none; padding-top: 8px; }
   min-height: 0; padding: 0;
   background: var(--cell-bg);
   border: 2px solid var(--cell-border);
-  touch-action: manipulation;
+  touch-action: none;
 }
-.cell:active:not(:disabled) { background: var(--accent-dark); filter: none; }
+.cell.pressed:not(:disabled) { background: var(--accent-dark); filter: none; }
 .cell.dead { opacity: .35; }
 .cell svg { height: 70%; max-height: 64px; width: auto; aspect-ratio: 1; fill: none; stroke: var(--mark); stroke-width: var(--mark-width); stroke-linecap: round; }
 

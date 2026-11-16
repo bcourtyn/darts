@@ -11,6 +11,7 @@ Persoonlijk project, volledig los van alle andere projecten (o.a. Counterfort). 
 ## Spelregels
 - Nummers 20–15 en Bull (25). Logica zit puur in `js/cricket.js`; een spel is een lijst events `{ p, t }`, één event = één mark.
 - Invoer zo simpel mogelijk: single = 1 klik, double = 2, triple = 3. Geen beurtbeheer; de speler is zelf verantwoordelijk. Ongedaan maken = laatste event weghalen.
+- Tikken op het bord via pointer events (niet `click`): een tik telt als de vinger loslaat binnen hetzelfde vak (+16px marge), per `pointerId`. Het bord heeft `touch-action: none` zodat een kleine veeg geen scroll wordt. `click` enkel voor toetsenbord (`detail === 0`).
 - Varianten (`game.mode`, ontbreekt bij oude spellen = standard). Een mark boven 3 op een nummer dat nog niet bij iedereen dicht is:
   - `standard`: waarde bij voor de speler zelf.
   - `cutthroat`: zolang je de enige bent die het nummer sloot, waarde bij voor jezelf (zoals standard). Zodra minstens één andere speler het ook sloot, waarde **afgetrokken** bij elke tegenstander die het nog open heeft. Eigen keuze van de gebruiker: ook hier speel je naar de meeste punten, niet de minste. Met 2 spelers = standard.
