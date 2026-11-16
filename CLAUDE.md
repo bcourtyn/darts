@@ -29,8 +29,21 @@ Persoonlijk project, volledig los van alle andere projecten (o.a. Counterfort). 
 - Spelerskleuren via klassen `p0`–`p3` (variabelen `--pc`, `--pc-bg`, `--pc-fg`).
 - Lettertypes lokaal in `fonts/` (offline); ontbreken ze, dan vallen de thema's terug op systeemletters.
 
+## Hosting
+- Publieke repo https://github.com/bcourtyn/darts (privé GitHub-account `bcourtyn`), site https://bcourtyn.github.io/darts/ via GitHub Pages (branch `main`, map `/ (root)`).
+- Na een push staat de nieuwe versie na ongeveer een minuut online. Controleren: `VERSION` in https://bcourtyn.github.io/darts/sw.js.
+- GitHub Pages stuurt `Cache-Control: max-age=600`. Daarom installeert `sw.js` alle bestanden met `cache: 'reload'`; zonder dat kreeg een nieuwe versie oude bestanden uit de webcache van de browser. Nooit weghalen.
+
 ## Werkwijze
 - Bij elke wijziging aan bestanden: verhoog `VERSION` in `sw.js` (= versienummer in Instellingen en in de update-melding, en naam van de cache) en houd de `ASSETS`-lijst up-to-date.
-- Updates: een nieuwe service worker wacht (geen automatische `skipWaiting`); `js/update.js` toont dan "Nieuwe versie beschikbaar" en activeert pas na een tik op Vernieuwen, waarna de pagina herlaadt. Bij terugkeren naar de app (visibilitychange) wordt opnieuw naar updates gekeken.
-- Lokaal testen met `serve.ps1` (http://localhost:8080).
-- Git: committen mag, **nooit pushen** — de gebruiker pusht altijd zelf (push naar `main` = live via GitHub Pages). Commits gebruiken de repo-lokale privé-identiteit, nooit de werkidentiteit.
+- Updates: een nieuwe service worker wacht (geen automatische `skipWaiting`); `js/update.js` toont dan "Versie N beschikbaar" en activeert pas na een tik op Vernieuwen, waarna de pagina herlaadt. Bij terugkeren naar de app (visibilitychange) wordt opnieuw naar updates gekeken.
+- Een wijziging aan `js/update.js` of `sw.js` werkt pas vanaf de update daarna: de draaiende pagina gebruikt bij de update zelf nog de oude code.
+- Git: committen mag, **nooit pushen** — de gebruiker pusht altijd zelf (push naar `main` = live via GitHub Pages). Na een commit het push-commando geven (`git -C D:\sources\varia\darts push`) en zeggen wat er op de iPad te controleren valt.
+- Commits gebruiken de repo-lokale privé-identiteit (`user.name` Bert Courtyn, `user.email` het GitHub-noreply-adres van `bcourtyn`, ingesteld in `.git/config`), nooit de werkidentiteit of een privé e-mailadres.
+- Communicatie met de gebruiker in het Nederlands. De app wordt vooral op een iPad gebruikt.
+
+## Testen
+- Lokaal: `serve.ps1` (standaard http://localhost:8080; in Claude-sessies poort 8765 met `-Port 8765`). Enkel PowerShell nodig.
+- De ingebouwde browser van de Claude-app ondersteunt de service worker **niet** op `localhost`: offline-gedrag en de update-melding kunnen enkel online getest worden, na een push door de gebruiker (in de browser terugkeren naar de app nabootsen met `document.dispatchEvent(new Event('visibilitychange'))`).
+- Testgegevens (spelers, spellen, localStorage) na elke test weer wissen en het thema terugzetten op Standaard.
+- Python is niet geïnstalleerd; hulpscripts in PowerShell of Bash.
